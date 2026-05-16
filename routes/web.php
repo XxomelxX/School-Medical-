@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HealthReportController;
 use App\Http\Controllers\MedicalRecordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentController;
@@ -25,6 +26,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/my-records/{id}/pdf', [MedicalRecordController::class, 'exportPdf'])->name('my-records.pdf');
 
         Route::middleware(['nurse'])->group(function () {
+            Route::get('/reports/health-summary', [HealthReportController::class, 'index'])->name('reports.health-summary');
             Route::get('/medical-records/{id}/pdf', [MedicalRecordController::class, 'exportPdf'])->name('medical-records.pdf');
             Route::resource('students', StudentController::class);
             Route::resource('medical-records', MedicalRecordController::class);

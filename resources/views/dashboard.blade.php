@@ -5,7 +5,7 @@
         <div class="page-header">
             <div>
                 <h1>Dashboard</h1>
-                <p class="subtitle">Overview of students, medical records, and recent clinic activity.</p>
+                <p class="subtitle">Overview of students and medical records.</p>
             </div>
             <div class="toolbar-actions">
                 <a class="btn btn-primary" href="{{ route('students.create') }}">+ Add Student</a>
@@ -93,28 +93,12 @@
             @endif
         </div>
 
-        <div class="card">
-            <h2>Recent activity</h2>
-            <p class="subtitle" style="margin-bottom: 8px;">System actions log</p>
-            @if($recentActivity->isEmpty())
-                <div class="empty-state">
-                    <p>No activity recorded yet.</p>
-                </div>
-            @else
-                <ul class="activity-list">
-                    @foreach($recentActivity as $log)
-                        <li>
-                            <span class="activity-dot"></span>
-                            <div style="flex: 1;">
-                                <strong>{{ $log->action }}</strong>
-                                <span>{{ $log->description }}</span>
-                            </div>
-                            <time>{{ $log->created_at->diffForHumans() }}</time>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
+    </div>
+
+    <div class="card">
+        <h2>Health status summary</h2>
+        <p class="subtitle" style="margin-bottom: 12px;">View how many checkups are Healthy, Critical, or need attention.</p>
+        <a href="{{ route('reports.health-summary') }}" class="btn btn-primary btn-sm">Open health summary</a>
     </div>
 
     <div class="card">

@@ -33,7 +33,7 @@
                     <label for="medical_status">Medical status</label>
                     <select id="medical_status" name="medical_status" required>
                         <option value="">Select status</option>
-                        @foreach(['Healthy','Under Observation','Needs Attention','Critical'] as $status)
+                        @foreach(\App\Models\MedicalRecord::STATUSES as $status)
                             <option value="{{ $status }}" {{ old('medical_status', $medicalRecord->medical_status) === $status ? 'selected' : '' }}>{{ $status }}</option>
                         @endforeach
                     </select>

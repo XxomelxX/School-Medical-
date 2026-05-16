@@ -260,6 +260,16 @@
         label { display: block; margin-top: 18px; font-weight: 700; font-size: 0.875rem; color: var(--primary-dark); }
         label:first-child { margin-top: 0; }
         .field-group label { margin-top: 0; }
+        .field-error { color: #991B1B; font-size: 0.8125rem; font-weight: 600; margin: 6px 0 0; }
+        input.invalid, select.invalid, textarea.invalid { border-color: var(--danger); }
+        .form-hint { font-size: 0.8125rem; color: var(--muted); margin-top: 6px; }
+        .feature-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+        .feature-list li {
+            padding: 16px 18px; border-radius: var(--radius-md);
+            border: 1px solid var(--border); background: var(--surface-muted);
+        }
+        .feature-list strong { display: block; color: var(--primary-dark); margin-bottom: 6px; }
+        .feature-list span { color: var(--muted); font-size: 0.9375rem; }
         input, select, textarea {
             width: 100%; padding: 12px 16px;
             border: 1px solid #CBD5E1; border-radius: var(--radius-md);
@@ -446,6 +456,7 @@
                                 @if(session('user_role') === 'nurse')
                                     <a href="{{ route('students.index') }}" class="{{ request()->is('students*') ? 'active' : '' }}">Students</a>
                                     <a href="{{ route('medical-records.index') }}" class="{{ request()->is('medical-records*') ? 'active' : '' }}">Medical Records</a>
+                                    <a href="{{ route('reports.health-summary') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Health Summary</a>
                                 @endif
                                 <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">My Profile</a>
                             </nav>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -47,11 +46,6 @@ class ProfileController extends Controller
 
         session(['user_name' => $user->name]);
 
-        ActivityLog::create([
-            'action' => 'Update Nurse Profile',
-            'description' => $user->name.' updated their account',
-        ]);
-
         return redirect()->route('profile.edit')->with('success', 'Your nurse profile has been updated.');
     }
 
@@ -90,11 +84,6 @@ class ProfileController extends Controller
         ]);
 
         session(['user_name' => $user->name]);
-
-        ActivityLog::create([
-            'action' => 'Update Student Profile',
-            'description' => $student->full_name.' updated their profile',
-        ]);
 
         return redirect()->route('profile.edit')->with('success', 'Your student profile has been updated.');
     }

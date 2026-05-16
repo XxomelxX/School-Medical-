@@ -5,7 +5,7 @@
         <div class="page-header">
             <div>
                 <h1>Add medical record</h1>
-                <p class="subtitle">Log a new student checkup and health assessment.</p>
+                <p class="subtitle">Log a new student checkup. Fields are validated (date, blood pressure format, file type).</p>
             </div>
             <a class="btn btn-ghost" href="{{ route('medical-records.index') }}">← Back</a>
         </div>
@@ -15,7 +15,7 @@
             <div class="form-grid">
                 <div class="full field-group">
                     <label for="student_id">Student</label>
-                    <select id="student_id" name="student_id" required>
+                    <select id="student_id" name="student_id" class="@error('student_id') invalid @enderror" required>
                         <option value="">Select student</option>
                         @foreach($students as $student)
                             <option value="{{ $student->id }}" {{ (string) old('student_id', $selectedStudentId ?? '') === (string) $student->id ? 'selected' : '' }}>
@@ -23,20 +23,23 @@
                             </option>
                         @endforeach
                     </select>
+                    @include('partials.field-error', ['field' => 'student_id'])
                 </div>
 
                 <div class="field-group">
                     <label for="checkup_date">Checkup date</label>
-                    <input id="checkup_date" type="date" name="checkup_date" value="{{ old('checkup_date', date('Y-m-d')) }}" required>
+                    <input id="checkup_date" type="date" name="checkup_date" value="{{ old('checkup_date', date('Y-m-d')) }}" class="@error('checkup_date') invalid @enderror" required>
+                    @include('partials.field-error', ['field' => 'checkup_date'])
                 </div>
                 <div class="field-group">
                     <label for="medical_status">Medical status</label>
-                    <select id="medical_status" name="medical_status" required>
+                    <select id="medical_status" name="medical_status" class="@error('medical_status') invalid @enderror" required>
                         <option value="">Select status</option>
-                        @foreach(['Healthy','Under Observation','Needs Attention','Critical'] as $status)
+                        @foreach(\App\Models\MedicalRecord::STATUSES as $status)
                             <option value="{{ $status }}" {{ old('medical_status') === $status ? 'selected' : '' }}>{{ $status }}</option>
                         @endforeach
                     </select>
+                    @include('partials.field-error', ['field' => 'medical_status'])
                 </div>
                 <div class="field-group">
                     <label for="height">Height</label>
@@ -48,11 +51,15 @@
                 </div>
                 <div class="field-group">
                     <label for="blood_pressure">Blood pressure</label>
-                    <input id="blood_pressure" name="blood_pressure" value="{{ old('blood_pressure') }}" placeholder="e.g. 120/80" required>
+                    <input id="blood_pressure" name="blood_pressure" value="{{ old('blood_pressure') }}" placeholder="e.g. 120/80" class="@error('blood_pressure') invalid @enderror" required>
+                    <p class="form-hint">Format: systolic/diastolic (example: 120/80)</p>
+                    @include('partials.field-error', ['field' => 'blood_pressure'])
                 </div>
                 <div class="field-group">
                     <label for="file_attachment">Attachment</label>
-                    <input id="file_attachment" type="file" name="file_attachment" accept=".pdf,.jpg,.jpeg,.png,.docx">
+                    <input id="file_attachment" type="file" name="file_attachment" accept=".pdf,.jpg,.jpeg,.png,.docx" class="@error('file_attachment') invalid @enderror">
+                    <p class="form-hint">Optional. PDF, JPG, PNG, or DOCX. Max 2 MB.</p>
+                    @include('partials.field-error', ['field' => 'file_attachment'])
                 </div>
 
                 <div class="field-group full">

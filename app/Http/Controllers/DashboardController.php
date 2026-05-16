@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActivityLog;
 use App\Models\MedicalRecord;
 use App\Models\Student;
 use App\Models\User;
@@ -21,7 +20,6 @@ class DashboardController extends Controller
             'healthyCount' => MedicalRecord::where('medical_status', 'Healthy')->count(),
             'attentionCount' => MedicalRecord::whereIn('medical_status', ['Critical', 'Needs Attention', 'Under Observation'])->count(),
             'recentRecords' => MedicalRecord::with('student')->orderByDesc('checkup_date')->limit(5)->get(),
-            'recentActivity' => ActivityLog::latest()->limit(8)->get(),
         ]);
     }
 

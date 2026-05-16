@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActivityLog;
+use App\Http\Requests\StoreStudentRequest;
+use App\Http\Requests\UpdateStudentRequest;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
@@ -30,27 +31,11 @@ class StudentController extends Controller
         return view('students.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreStudentRequest $request)
     {
-        $validated = $request->validate([
-            'student_id' => 'required|unique:students,student_id',
-            'full_name' => 'required',
-            'gender' => 'required',
-            'course' => 'required',
-            'section' => 'required',
-            'birthdate' => 'required|date',
-            'contact_number' => 'required',
-            'address' => 'required',
-            'guardian_name' => 'required',
-            'emergency_contact' => 'required',
-        ]);
+        $validated = $request->validated();
 
         Student::create($validated);
-
-        ActivityLog::create([
-            'action' => 'Create Student',
-            'description' => 'Added new student',
-        ]);
 
         return redirect()->route('students.index')
             ->with('success', 'Student added successfully.');
@@ -68,27 +53,9 @@ class StudentController extends Controller
         return view('students.edit', compact('student'));
     }
 
-    public function update(Request $request, Student $student)
+    public function update(UpdateStudentRequest $request, Student $student)
     {
-        $validated = $request->validate([
-            'student_id' => 'required|unique:students,student_id,' . $student->id,
-            'full_name' => 'required',
-            'gender' => 'required',
-            'course' => 'required',
-            'section' => 'required',
-            'birthdate' => 'required|date',
-            'contact_number' => 'required',
-            'address' => 'required',
-            'guardian_name' => 'required',
-            'emergency_contact' => 'required',
-        ]);
-
-        $student->update($validated);
-
-        ActivityLog::create([
-            'action' => 'Update Student',
-            'description' => 'Updated student information',
-        ]);
+        $student->update($request->validated());
 
         return redirect()->route('students.show', $student)
             ->with('success', 'Student updated successfully.');
@@ -97,11 +64,6 @@ class StudentController extends Controller
     public function destroy(Student $student)
     {
         $student->delete();
-
-        ActivityLog::create([
-            'action' => 'Delete Student',
-            'description' => 'Deleted a student record',
-        ]);
 
         return redirect()->route('students.index')
             ->with('success', 'Student deleted successfully.');

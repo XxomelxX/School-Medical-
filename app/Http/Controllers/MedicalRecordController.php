@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ActivityLog;
+use App\Http\Requests\StoreMedicalRecordRequest;
+use App\Http\Requests\UpdateMedicalRecordRequest;
 use App\Models\MedicalRecord;
 use App\Models\Student;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -31,7 +32,7 @@ class MedicalRecordController extends Controller
             ->orderByDesc('checkup_date')
             ->paginate(10);
 
-        $statuses = ['Healthy', 'Under Observation', 'Needs Attention', 'Critical'];
+        $statuses = MedicalRecord::STATUSES;
 
         return view('medical_records.index', compact('records', 'search', 'status', 'statuses'));
     }
@@ -44,23 +45,9 @@ class MedicalRecordController extends Controller
         return view('medical_records.create', compact('students', 'selectedStudentId'));
     }
 
-    public function store(Request $request)
+    public function store(StoreMedicalRecordRequest $request)
     {
-        $validated = $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'checkup_date' => 'required|date',
-            'height' => 'required',
-            'weight' => 'required',
-            'blood_pressure' => 'required',
-            'allergies' => 'nullable',
-            'medical_condition' => 'nullable',
-            'diagnosis' => 'required',
-            'treatment' => 'required',
-            'prescribed_medicine' => 'nullable',
-            'notes' => 'nullable',
-            'medical_status' => 'required',
-            'file_attachment' => 'nullable|mimes:pdf,jpg,png,docx|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('file_attachment')) {
             $validated['file_attachment'] = $request->file('file_attachment')
@@ -68,11 +55,6 @@ class MedicalRecordController extends Controller
         }
 
         MedicalRecord::create($validated);
-
-        ActivityLog::create([
-            'action' => 'Create Record',
-            'description' => 'Medical record added',
-        ]);
 
         return redirect()->route('medical-records.index')
             ->with('success', 'Medical record added successfully.');
@@ -92,23 +74,9 @@ class MedicalRecordController extends Controller
         return view('medical_records.edit', compact('medicalRecord', 'students'));
     }
 
-    public function update(Request $request, MedicalRecord $medicalRecord)
+    public function update(UpdateMedicalRecordRequest $request, MedicalRecord $medicalRecord)
     {
-        $validated = $request->validate([
-            'student_id' => 'required|exists:students,id',
-            'checkup_date' => 'required|date',
-            'height' => 'required',
-            'weight' => 'required',
-            'blood_pressure' => 'required',
-            'allergies' => 'nullable',
-            'medical_condition' => 'nullable',
-            'diagnosis' => 'required',
-            'treatment' => 'required',
-            'prescribed_medicine' => 'nullable',
-            'notes' => 'nullable',
-            'medical_status' => 'required',
-            'file_attachment' => 'nullable|mimes:pdf,jpg,png,docx|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('file_attachment')) {
             if ($medicalRecord->file_attachment) {
@@ -121,11 +89,6 @@ class MedicalRecordController extends Controller
 
         $medicalRecord->update($validated);
 
-        ActivityLog::create([
-            'action' => 'Update Record',
-            'description' => 'Medical record updated',
-        ]);
-
         return redirect()->route('medical-records.show', $medicalRecord)
             ->with('success', 'Medical record updated successfully.');
     }
@@ -137,11 +100,6 @@ class MedicalRecordController extends Controller
         }
 
         $medicalRecord->delete();
-
-        ActivityLog::create([
-            'action' => 'Delete Record',
-            'description' => 'Medical record deleted',
-        ]);
 
         return redirect()->route('medical-records.index')
             ->with('success', 'Medical record deleted successfully.');

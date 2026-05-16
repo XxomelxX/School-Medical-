@@ -9,6 +9,13 @@ class MedicalRecord extends Model
 {
     use HasFactory;
 
+    public const STATUSES = [
+        'Healthy',
+        'Under Observation',
+        'Needs Attention',
+        'Critical',
+    ];
+
     protected $fillable = [
         'student_id',
         'checkup_date',
@@ -22,7 +29,7 @@ class MedicalRecord extends Model
         'prescribed_medicine',
         'notes',
         'medical_status',
-        'file_attachment'
+        'file_attachment',
     ];
 
     public function student()
@@ -30,4 +37,3 @@ class MedicalRecord extends Model
         return $this->belongsTo(Student::class);
     }
 }
-
